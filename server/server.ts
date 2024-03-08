@@ -1,11 +1,11 @@
 import express from "express";
+const shortUrlRoutes = require("./routes/index");
 
 const app = express();
 const port = 8080;
-
-app.get("/", (_req, res) => {
-  res.send("Hello World!");
-});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/api", shortUrlRoutes);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
