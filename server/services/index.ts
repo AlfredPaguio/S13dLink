@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 import { ShortenedUrlModel, type ShortenedUrlType } from "../models/schema";
 
-async function connectToDatabase() {
+export async function connectToDatabase() {
   // await mongoose.connect("mongodb://127.0.0.1:27017/mongoose-app");
   await mongoose.connect(
     "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.1.5"
   );
 }
 
-async function disconnectFromDatabase() {
+export async function disconnectFromDatabase() {
   await mongoose.disconnect();
 }
 
@@ -29,4 +29,11 @@ async function getAllShortenedUrls() {
   return shortenedUrls;
 }
 
-export { createShortUrl, getAllShortenedUrls };
+async function findShortUrl(shortUrl: string) {
+  await connectToDatabase();
+  const findShortUrl = await ShortenedUrlModel.findOne({ "shortUrl": shortUrl });
+  // await disconnectFromDatabase();
+  return findShortUrl;
+}
+
+export { createShortUrl, getAllShortenedUrls, findShortUrl };

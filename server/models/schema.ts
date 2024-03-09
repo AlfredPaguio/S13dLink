@@ -10,7 +10,7 @@ const ShortenedUrlSchema = new mongoose.Schema(
   {
     methods: {
       whoami() {
-        console.log(`${this.originalUrl}!`);
+        return `I am ${this.originalUrl}!`;
       },
     },
   }
