@@ -7,7 +7,7 @@ import {
 import type { Request, Response } from "express";
 
 async function createShortUrlController(req: Request, res: Response) {
-  const originalUrl = req.body.originalUrl;
+  const { originalUrl } = req.body;
   if (!originalUrl) {
     return res.status(400).send({
       message: "The request cannot be fulfilled due to missing data.",
@@ -33,7 +33,7 @@ async function getAllShortenedUrlsController(req: Request, res: Response) {
 }
 
 async function redirectShortUrlController(req: Request, res: Response) {
-  const findUrl = req.params.shortUrl;
+  const {shortUrl: findUrl} = req.params;
   if (!findUrl) {
     return res.status(404).send({
       message: "Short URL not found.",

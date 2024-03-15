@@ -8,5 +8,5 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", shortUrlRoutes);
 
 app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+  console.info(`[Server]: Server is running at http://localhost:${port}`);
 });
