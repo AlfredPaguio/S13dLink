@@ -5,6 +5,7 @@ import {
   getAllShortenedUrls,
 } from "../services";
 import type { Request, Response } from "express";
+import addHTTPS from "../utils/AddHTTPS";
 
 async function createShortUrlController(req: Request, res: Response) {
   const { originalUrl } = req.body;
@@ -33,7 +34,7 @@ async function getAllShortenedUrlsController(req: Request, res: Response) {
 }
 
 async function redirectShortUrlController(req: Request, res: Response) {
-  const {shortUrl: findUrl} = req.params;
+  const { shortUrl: findUrl } = req.params;
   if (!findUrl) {
     return res.status(404).send({
       message: "Short URL not found.",
@@ -50,9 +51,11 @@ async function redirectShortUrlController(req: Request, res: Response) {
       });
     }
     shortUrl.clickCount++;
-    await shortUrl.save();
-    console.log("Redirecting to:", shortUrl.originalUrl);
-    res.redirect(302, "https://" + shortUrl.originalUrl);
+    const savedShortUrl = await shortUrl.save();
+    const finalUrl = await addHTTPS(savedShortUrl.originalUrl);
+    console.log("Redirecting to:", finalUrl);
+    // res.redirect(302, "https://" + finalUrl);
+    res.redirect(302, finalUrl);
   } catch (error) {
     // console.error("Error:", error);
     // res.status(500).send({ message: "Error fetching shortened URL" });
