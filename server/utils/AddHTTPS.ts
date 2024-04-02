@@ -1,4 +1,5 @@
 async function addHTTPS(url: string): Promise<string> {
+  if (URL.canParse(url)) return url;
   let newUrl;
   try {
     newUrl = new URL(url);
@@ -9,10 +10,6 @@ async function addHTTPS(url: string): Promise<string> {
     console.error("[Server] " + error);
     return "https://" + url;
   }
-
-  // if (!url.startsWith("http://") || !url.startsWith("https://")) {
-  //   return "https://" + url;
-  // }
   return url;
 }
 
