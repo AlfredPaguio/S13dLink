@@ -1,6 +1,13 @@
 import { CopyIcon, ExternalLinkIcon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarMenu,
+  MenubarTrigger,
+} from "./ui/menubar";
+import CopyToClipboardMenubarItem from "./CopyToClipboardMenubarItem";
 
 export interface ShortenedURLItemType {
   shortUrl: string;
@@ -31,9 +38,22 @@ function ShortenedURLItem({
             <ExternalLinkIcon />
           </a>
         </Button>
-        <Button size="icon" variant={"outline"}>
-          <CopyIcon />
-        </Button>
+        <Menubar>
+          <MenubarMenu>
+            <MenubarTrigger asChild>
+              <Button size="icon" variant={"outline"}>
+                <CopyIcon />
+              </Button>
+            </MenubarTrigger>
+            <MenubarContent>
+              <CopyToClipboardMenubarItem name="Short URL" toCopy={shortUrl} />
+              <CopyToClipboardMenubarItem
+                name="Original URL"
+                toCopy={originalUrl}
+              />
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
       </div>
     </Card>
   );
