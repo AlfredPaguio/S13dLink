@@ -1,10 +1,10 @@
-const {
+import {
   getAllShortenedUrlsController,
   createShortUrlController,
   redirectShortUrlController,
-} = require("../controllers");
+} from "../controllers";
 
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
 // get all links
@@ -20,4 +20,4 @@ router.get("/redirect/:shortUrl", redirectShortUrlController);
 // get specific link data
 // router.get("/:id", something);
 
-module.exports = router;
+export default router;

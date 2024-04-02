@@ -1,5 +1,5 @@
 import express from "express";
-const shortUrlRoutes = require("./routes/index");
+import shortUrlRoutes from "./routes/index";
 
 const app = express();
 const port = 8080;
