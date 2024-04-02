@@ -45,7 +45,7 @@ function URLInputForm() {
 
   return (
     <Form {...form}>
-      <form className="space-y-2" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-2 w-full p-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="websiteURL"
