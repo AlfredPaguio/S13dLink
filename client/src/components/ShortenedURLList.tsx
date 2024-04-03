@@ -8,7 +8,7 @@ function ShortenedURLList() {
   useEffect(() => {
     async function fetchUrls() {
       try {
-        const response = await fetch("/api/", {
+        const response = await fetch("/api/list", {
           method: "GET",
         });
         if (!response.ok) {

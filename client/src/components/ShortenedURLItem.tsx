@@ -26,10 +26,20 @@ function ShortenedURLItem({
       className="flex items-center justify-between  p-4 rounded-md shadow-lg"
     >
       <div>
-        <p className="text-md text-gray-900 dark:text-white mb-1">{shortUrl}</p>
-        <p className="text-xs text-gray-900 dark:text-white mb-1">
-          {originalUrl}
-        </p>
+        <a
+          href={`${import.meta.env.BASE_URL}api/${shortUrl}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <p className="text-md text-gray-900 dark:text-white mb-1">
+            {shortUrl}
+          </p>
+        </a>
+        <a href={originalUrl} target="_blank" rel="noopener noreferrer">
+          <p className="text-xs text-gray-900 dark:text-white mb-1">
+            {originalUrl}
+          </p>
+        </a>
         <p className="text-xs text-gray-500">{`Clicked ${clickCount} time${clickCount === "1" ? "" : "s"}`}</p>
       </div>
       <div className="flex items-center justify-center space-x-4">
@@ -46,7 +56,10 @@ function ShortenedURLItem({
               </Button>
             </MenubarTrigger>
             <MenubarContent>
-              <CopyToClipboardMenubarItem name="Short URL" toCopy={shortUrl} />
+              <CopyToClipboardMenubarItem
+                name="Short URL"
+                toCopy={`${import.meta.env.BASE_URL}api/${shortUrl}`}
+              />
               <CopyToClipboardMenubarItem
                 name="Original URL"
                 toCopy={originalUrl}
