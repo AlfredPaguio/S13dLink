@@ -1,5 +1,7 @@
 import {
   createShortUrl,
+  // deleteShortUrl,
+  findOriginalUrl,
   findShortUrl,
   getAllShortenedUrls,
 } from "../services/shortUrl";
@@ -8,16 +10,34 @@ import addHTTPS from "../utils/AddHTTPS";
 
 async function createShortUrlController(req: Request, res: Response) {
   const { originalUrl } = req.body;
+  // const BASE_URL = Bun.env.BASE_URL;
+
   if (!originalUrl) {
     return res
       .status(400)
       .send("The request cannot be fulfilled due to missing data.");
   }
+
+  if (!URL.canParse(originalUrl)) {
+    return res.status(400).send("The url cannot be parsed.");
+  }
+
   try {
+    const existingUrl = await findOriginalUrl(originalUrl);
+    // console.log("existing:", existingUrl)
+    if (existingUrl) {
+      // url.com/api/shortUrl
+      const shortUrl = existingUrl?.shortUrl;
+      return res
+        .status(200)
+        .json({ shortUrl: shortUrl, message: "Existing URL found" });
+    }
+
     const { shortUrl } = await createShortUrl({ originalUrl });
-    return res
-      .status(201)
-      .send({ shortUrl: shortUrl, message: "Short URL created successfully" });
+    return res.status(201).send({
+      shortUrl: shortUrl,
+      message: "Short URL created successfully",
+    });
   } catch (error) {
     return res.status(500).send("Error creating short URL");
   }
@@ -48,17 +68,30 @@ async function redirectShortUrlController(req: Request, res: Response) {
     const savedShortUrl = await shortUrl.save();
     const finalUrl = await addHTTPS(savedShortUrl.originalUrl);
     console.log("Redirecting to:", finalUrl);
-    // res.redirect(302, "https://" + finalUrl);
-    res.redirect(302, finalUrl);
+    return res.redirect(302, finalUrl);
   } catch (error) {
-    // console.error("Error:", error);
-    // res.status(500).send({ message: "Error fetching shortened URL" });
-    res.status(500).send("Error: " + error);
+    return res.status(500).send("Error: " + error);
   }
 }
+
+// async function deleteShortUrlController(req: Request, res: Response) {
+//   const { shortUrl: toBeDeleted } = req.params;
+//   console.log("Deleting:", toBeDeleted);
+//   try {
+//     const deletedUrl = await deleteShortUrl(toBeDeleted);
+//     if (deletedUrl.deletedCount == 0) {
+//       return res.status(400).json("URL not found");
+//     }
+//     return res.status(200).json({ message: `${toBeDeleted} deleted` });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json("Server Error" + error);
+//   }
+// }
 
 export {
   createShortUrlController,
   getAllShortenedUrlsController,
   redirectShortUrlController,
+  // deleteShortUrlController,
 };
