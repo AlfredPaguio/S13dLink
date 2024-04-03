@@ -3,8 +3,8 @@
   "module": "server.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch server.ts",
-    "start": "bun server.ts"
+    "dev": "bun --env-file=.env.development --watch server.ts",
+    "start": "bun --env-file=.env server.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

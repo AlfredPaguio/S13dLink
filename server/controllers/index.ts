@@ -1,9 +1,8 @@
 import {
   createShortUrl,
-  disconnectFromDatabase,
   findShortUrl,
   getAllShortenedUrls,
-} from "../services";
+} from "../services/shortUrl";
 import type { Request, Response } from "express";
 import addHTTPS from "../utils/AddHTTPS";
 
@@ -43,7 +42,6 @@ async function redirectShortUrlController(req: Request, res: Response) {
     const shortUrl = await findShortUrl(findUrl);
     console.log("Identity:", shortUrl?.whoami());
     if (!shortUrl) {
-      await disconnectFromDatabase();
       return res.status(404).send("Short URL not found.");
     }
     shortUrl.clickCount++;
@@ -57,7 +55,6 @@ async function redirectShortUrlController(req: Request, res: Response) {
     // res.status(500).send({ message: "Error fetching shortened URL" });
     res.status(500).send("Error: " + error);
   }
-  await disconnectFromDatabase();
 }
 
 export {

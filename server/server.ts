@@ -1,8 +1,10 @@
 import express from "express";
 import shortUrlRoutes from "./routes/index";
+import { connectToDatabase } from "./services/db";
 
 const app = express();
-const port = 8080;
+const port = Bun.env.PORT || 8080;
+await connectToDatabase();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api", shortUrlRoutes);
