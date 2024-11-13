@@ -1,6 +1,7 @@
 import express from "express";
 import shortUrlRoutes from "./routes/index";
 import { connectToDatabase } from "./services/db";
+import "reflect-metadata"
 
 const app = express();
 const port = Bun.env.PORT || 8080;
