@@ -1,28 +1,38 @@
-import { ShortenedUrlModel, type ShortenedUrlType } from "../models/schema";
+import { nanoid } from "nanoid";
 
-async function createShortUrl({
-  originalUrl,
-}: Pick<ShortenedUrlType, "originalUrl">) {
-  const shortenedUrl = new ShortenedUrlModel({ originalUrl });
-  const savedShortUrl = await shortenedUrl.save();
-  return savedShortUrl;
+interface ShortUrl {
+  id: number;
+  originalUrl: string;
+  shortUrl: string;
+  clickCount: number;
 }
 
-async function getAllShortenedUrls() {
-  const shortenedUrls = await ShortenedUrlModel.find();
-  return shortenedUrls;
+// Simulated in-memory database
+const dummyDatabase: ShortUrl[] = [];
+let idCounter = 1;
+
+function createShortUrl({ originalUrl }: { originalUrl: string }): ShortUrl {
+  const shortUrl = nanoid(13);
+  const newShortUrl: ShortUrl = {
+    id: idCounter++,
+    originalUrl,
+    shortUrl,
+    clickCount: 0,
+  };
+  dummyDatabase.push(newShortUrl);
+  return newShortUrl;
 }
 
-async function findShortUrl(shortUrl: string) {
-  const findShortUrl = await ShortenedUrlModel.findOne({ shortUrl: shortUrl });
-  return findShortUrl;
+function getAllShortenedUrls(): ShortUrl[] {
+  return dummyDatabase;
 }
 
-async function findOriginalUrl(originalUrl: string) {
-  const findOriginalUrl = await ShortenedUrlModel.findOne({
-    originalUrl: originalUrl,
-  });
-  return findOriginalUrl;
+function findShortUrl(shortUrl: string): ShortUrl | undefined {
+  return dummyDatabase.find((url) => url.shortUrl === shortUrl);
+}
+
+function findOriginalUrl(originalUrl: string): ShortUrl | undefined {
+  return dummyDatabase.find((url) => url.originalUrl === originalUrl);
 }
 
 // async function deleteShortUrl(shortUrl: string) {

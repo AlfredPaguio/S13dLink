@@ -6,6 +6,7 @@ import {
   getAllShortenedUrls,
 } from "../services/shortUrl";
 import type { Request, Response } from "express";
+import isValidUrl from "../utils/isValidUrl";
 import addHTTPS from "../utils/AddHTTPS";
 
 async function createShortUrlController(req: Request, res: Response) {
@@ -18,7 +19,7 @@ async function createShortUrlController(req: Request, res: Response) {
       .send("The request cannot be fulfilled due to missing data.");
   }
 
-  if (!URL.canParse(originalUrl)) {
+  if (!isValidUrl(originalUrl)) {
     return res.status(400).send("The url cannot be parsed.");
   }
 
@@ -27,15 +28,15 @@ async function createShortUrlController(req: Request, res: Response) {
     // console.log("existing:", existingUrl)
     if (existingUrl) {
       // url.com/api/shortUrl
-      const shortUrl = existingUrl?.shortUrl;
-      return res
-        .status(200)
-        .json({ shortUrl: shortUrl, message: "Existing URL found" });
+      return res.status(200).json({
+        shortUrl: existingUrl.shortUrl,
+        message: "Existing URL found",
+      });
     }
 
-    const { shortUrl } = await createShortUrl({ originalUrl });
+    const newShortUrl = createShortUrl({ originalUrl });
     return res.status(201).send({
-      shortUrl: shortUrl,
+      shortUrl: newShortUrl.shortUrl,
       message: "Short URL created successfully",
     });
   } catch (error) {
@@ -45,7 +46,7 @@ async function createShortUrlController(req: Request, res: Response) {
 
 async function getAllShortenedUrlsController(req: Request, res: Response) {
   try {
-    const shortenedUrls = await getAllShortenedUrls();
+    const shortenedUrls = getAllShortenedUrls();
     return res.status(200).json(shortenedUrls);
   } catch (error) {
     return res.status(500).send("Error fetching shortened URLs");
@@ -59,15 +60,15 @@ async function redirectShortUrlController(req: Request, res: Response) {
   }
   console.log("Find URL:", findUrl);
   try {
-    const shortUrl = await findShortUrl(findUrl);
-    console.log("Identity:", shortUrl?.whoami());
+    const shortUrl = findShortUrl(findUrl);
     if (!shortUrl) {
       return res.status(404).send("Short URL not found.");
     }
+
     shortUrl.clickCount++;
-    const savedShortUrl = await shortUrl.save();
-    const finalUrl = await addHTTPS(savedShortUrl.originalUrl);
-    console.log("Redirecting to:", finalUrl);
+
+    const finalUrl = await addHTTPS(shortUrl.originalUrl);
+    console.log("Final URL:", finalUrl);
     return res.redirect(302, finalUrl);
   } catch (error) {
     return res.status(500).send("Error: " + error);

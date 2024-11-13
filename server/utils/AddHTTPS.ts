@@ -1,5 +1,7 @@
+import isValidUrl from "./isValidUrl";
+
 async function addHTTPS(url: string): Promise<string> {
-  if (URL.canParse(url)) return url;
+  if (isValidUrl(url)) return url;
   let newUrl;
   try {
     newUrl = new URL(url);
